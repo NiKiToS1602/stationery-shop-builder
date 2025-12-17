@@ -60,6 +60,23 @@ services:
       redis:
         condition: service_healthy
 
+  catalog:
+    build:
+      context: ../services/catalog
+      dockerfile: Dockerfile
+    container_name: stationery_catalog
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql+asyncpg://stationery:stationery@postgres:5432/stationery"
+      JWT_SECRET: "dev-secret-change-me"
+      JWT_ALGORITHM: "HS256"
+    ports:
+      - "8002:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
 volumes:
   postgres_data:
   redis_data:
