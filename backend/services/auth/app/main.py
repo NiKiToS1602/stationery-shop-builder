@@ -37,11 +37,16 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 # Разрешаем запросы с админки (Vite) и клиента (на будущее)
 origins = [
-    "http://localhost:3001",  # admin (Vite)
+    "http://localhost:5173",  # admin (Vite default)
+    "http://127.0.0.1:5173",
+
+    "http://localhost:3001",  # admin (Vite, если у вас так настроено)
     "http://127.0.0.1:3001",
-    "http://localhost:3000",  # client (Next dev, если понадобится)
+
+    "http://localhost:3000",  # client (Next dev)
     "http://127.0.0.1:3000",
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
