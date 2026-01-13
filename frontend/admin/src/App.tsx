@@ -1,38 +1,31 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
 import { ProtectedRoute } from "./app/ProtectedRoute";
+import { AdminLayout } from "./layouts/AdminLayout";
+
 import { BuilderPage } from "./pages/BuilderPage";
-import { DashboardPage } from "./pages/DashboardPage";
+import AdminPanelPage from "./pages/AdminPanelPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* публичный маршрут */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* всё остальное — только после логина */}
         <Route
-          path="/"
+          path="/admin"
           element={
             <ProtectedRoute>
-              <BuilderPage />
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<Navigate to="builder" replace />} />
+          <Route path="builder" element={<BuilderPage />} />
+          <Route path="panel" element={<AdminPanelPage />} />
+        </Route>
 
-        <Route
-          path="/debug"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* если попали на неизвестный путь — кидаем на главную,
-            а ProtectedRoute уже решит: '/' или '/login' */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </BrowserRouter>
   );

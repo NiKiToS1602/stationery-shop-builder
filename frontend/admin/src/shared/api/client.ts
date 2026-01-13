@@ -14,7 +14,7 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     ...(options.headers as Record<string, string> | undefined),
   };
 
-  // Добавляем Bearer токен на все запросы, кроме login/confirm
+  // Проверка base API URL для auth и catalog
   const isPublic =
     path.startsWith("/api/v1/auth/login/") ||
     path.startsWith("/api/v1/auth/confirm/") ||
@@ -24,8 +24,13 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
-    credentials: "include", // refresh_token cookie
+  // Пример для auth и catalog
+  const baseUrl = path.startsWith("/api/v1/auth/") 
+                  ? import.meta.env.VITE_AUTH_API_URL 
+                  : import.meta.env.VITE_CATALOG_API_URL;
+
+  const res = await fetch(`${baseUrl}${path}`, {
+    credentials: "include", // for refresh_token cookie
     headers,
     ...options,
   });
